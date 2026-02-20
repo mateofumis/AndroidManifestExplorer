@@ -86,7 +86,7 @@ The tool categorizes findings by risk and generates specific `adb` commands:
 
 ### **Preview**
 
-![Preview Image](https://github.com/mateofumis/AndroidManifestExplorer/assets/preview.png)
+![Preview Image](https://raw.githubusercontent.com/mateofumis/AndroidManifestExplorer/refs/heads/main/assets/preview.png)
 
 ## **⚖️  Disclaimer**
 
