@@ -83,6 +83,11 @@ The tool categorizes findings by risk and generates specific `adb` commands:
     [★] DEEP LINK DETECTED: secret-app://debug_panel  
     [>] Attack: adb shell am start -W -a android.intent.action.VIEW -d "secret-app://debug_panel" com.package.name
 ```
+
+### **Preview**
+
+![Preview Image](https://github.com/mateofumis/AndroidManifestExplorer/assets/preview.png)
+
 ## **⚖️  Disclaimer**
 
 This tool is intended for professional security research and authorized penetration testing only. Unauthorized use against systems without prior written consent is strictly prohibited and may violate local and international laws. The developer assumes no liability for misuse or damage caused by this utility.
