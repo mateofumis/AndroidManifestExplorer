@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="AndroidManifestExplorer",
-    version="1.0.0",
+    version="1.1.0",
     author="Mateo Fumis",
     author_email="mateofumis@mfumis.com",
     description="A professional tool to automate attack surface detection in Android applications by parsing Manifest files.",
