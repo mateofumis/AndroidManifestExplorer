@@ -14,25 +14,53 @@ def get_attr(element, attr_name):
     return element.get(f"{ANDROID_NS}{attr_name}")
 
 def analyze_deep_links(activity_node, full_name, package_name):
-    """Extracts schemes and hosts to build Deep Link attacks"""
-    found_uris = set()
-    
+    """
+    Extracts schemes, hosts, and paths from intent-filters.
+    Android merges all <data> tags within a single <intent-filter>.
+    """
     for intent in activity_node.findall('intent-filter'):
-        data_tags = intent.findall('data')
+        schemes = []
+        hosts = []
+        paths = []
         
+        data_tags = intent.findall('data')
+        if not data_tags:
+            continue
+
         for data in data_tags:
-            scheme = get_attr(data, 'scheme')
-            host = get_attr(data, 'host')
+            s = get_attr(data, 'scheme')
+            h = get_attr(data, 'host')
+            p = get_attr(data, 'path') or get_attr(data, 'pathPrefix') or get_attr(data, 'pathPattern')
             
-            if scheme:
-                uri = f"{scheme}://"
+            if s: schemes.append(s)
+            if h: hosts.append(h)
+            if p: paths.append(p)
 
-                if host: uri += host
-                found_uris.add(uri)
+        schemes = list(dict.fromkeys(schemes))
+        hosts = list(dict.fromkeys(hosts))
+        paths = list(dict.fromkeys(paths))
 
-    for uri in sorted(found_uris):
-        print(f"{Fore.LIGHTGREEN_EX}    [★] DEEP LINK DETECTED: {uri}")
-        print(f"{Fore.WHITE}    [>] Attack: adb shell am start -W -a android.intent.action.VIEW -d \"{uri}\" {package_name}")
+        for s in schemes:
+            base_uri = f"{s}://"
+            
+            if hosts:
+                for h in hosts:
+                    uri_with_host = f"{base_uri}{h}"
+                    if paths:
+                        for p in paths:
+                            display_uri = f"{uri_with_host}{p}"
+                            clean_p = p.replace('.*', '').replace('*', '')
+                            attack_uri = f"{uri_with_host}{clean_p}"
+                            print_attack(display_uri, attack_uri, package_name)
+                    else:
+                        print_attack(uri_with_host, uri_with_host, package_name)
+            else:
+                print_attack(base_uri, base_uri, package_name)
+
+def print_attack(display_uri, attack_uri, package_name):
+    """Helper to print formatted deep link findings"""
+    print(f"{Fore.LIGHTGREEN_EX}    [★] DEEP LINK DETECTED: {display_uri}")
+    print(f"{Fore.WHITE}    [>] Attack: adb shell am start -W -a android.intent.action.VIEW -d \"{attack_uri}\" {package_name}")
 
 def analyze_manifest(manifest_path):
     try:
@@ -114,7 +142,7 @@ def analyze_manifest(manifest_path):
     except FileNotFoundError:
         print(f"{Fore.RED}[!] Error: File not found at {manifest_path}")
     except ET.ParseError:
-        print(f"{Fore.RED}[!] Error: File is not a valid XML. Did you decompile it with APKtool?")
+        print(f"{Fore.RED}[!] Error: File is not a valid XML. Did you decompile it with APKtool/Jadx?")
     except Exception as e:
         print(f"{Fore.RED}[!] Unexpected error: {e}")
 
