@@ -1,0 +1,159 @@
+{
+  "package": "com.manifestexploitable.app",
+  "app_flags": {
+    "sharedUserId": "com.manifestexploitable.shared",
+    "debuggable": "true",
+    "allowBackup": "true",
+    "testOnly": "true",
+    "usesCleartextTraffic": "true",
+    "networkSecurityConfig": "@xml/network_security_config"
+  },
+  "dangerous_permissions": [
+    "android.permission.CAMERA",
+    "android.permission.READ_SMS",
+    "android.permission.RECORD_AUDIO",
+    "android.permission.ACCESS_FINE_LOCATION",
+    "android.permission.READ_CONTACTS",
+    "android.permission.WRITE_EXTERNAL_STORAGE"
+  ],
+  "attack_surface": [
+    {
+      "type": "activity",
+      "name": "com.manifestexploitable.app.MainActivity",
+      "permission": null,
+      "intent_filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ]
+        }
+      ],
+      "adb_command": "adb shell am start -n com.manifestexploitable.app/com.manifestexploitable.app.MainActivity"
+    },
+    {
+      "type": "activity",
+      "name": "com.manifestexploitable.app.TransferActivity",
+      "permission": null,
+      "intent_filters": [],
+      "adb_command": "adb shell am start -n com.manifestexploitable.app/com.manifestexploitable.app.TransferActivity"
+    },
+    {
+      "type": "activity",
+      "name": "com.manifestexploitable.app.DeepLinkActivity",
+      "permission": null,
+      "intent_filters": [
+        {
+          "actions": [
+            "android.intent.action.VIEW"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT",
+            "android.intent.category.BROWSABLE"
+          ]
+        },
+        {
+          "actions": [
+            "android.intent.action.VIEW"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT",
+            "android.intent.category.BROWSABLE"
+          ]
+        }
+      ],
+      "adb_command": "adb shell am start -n com.manifestexploitable.app/com.manifestexploitable.app.DeepLinkActivity",
+      "deep_links": [
+        {
+          "uri": "manifestexploitable://open/transfer",
+          "action": "android.intent.action.VIEW",
+          "attack_command": "adb shell am start -W -a android.intent.action.VIEW -d 'manifestexploitable://open/transfer' com.manifestexploitable.app"
+        },
+        {
+          "uri": "https://manifestexploitable.com/account/.*",
+          "action": "android.intent.action.VIEW",
+          "attack_command": "adb shell am start -W -a android.intent.action.VIEW -d 'https://manifestexploitable.com/account/' com.manifestexploitable.app"
+        }
+      ]
+    },
+    {
+      "type": "activity",
+      "name": "com.manifestexploitable.app.AdminPanelActivity",
+      "permission": "com.manifestexploitable.app.ACCESS_ACCOUNTS",
+      "intent_filters": [],
+      "adb_command": "adb shell am start -n com.manifestexploitable.app/com.manifestexploitable.app.AdminPanelActivity"
+    },
+    {
+      "type": "receiver",
+      "name": "com.manifestexploitable.app.SmsInterceptReceiver",
+      "permission": null,
+      "intent_filters": [
+        {
+          "actions": [
+            "android.provider.Telephony.SMS_RECEIVED"
+          ]
+        }
+      ],
+      "adb_command": "adb shell am broadcast -n com.manifestexploitable.app/com.manifestexploitable.app.SmsInterceptReceiver"
+    },
+    {
+      "type": "receiver",
+      "name": "com.manifestexploitable.app.AdminCommandReceiver",
+      "permission": null,
+      "intent_filters": [],
+      "adb_command": "adb shell am broadcast -n com.manifestexploitable.app/com.manifestexploitable.app.AdminCommandReceiver"
+    },
+    {
+      "type": "service",
+      "name": "com.manifestexploitable.app.DataSyncService",
+      "permission": null,
+      "intent_filters": [
+        {
+          "actions": [
+            "com.manifestexploitable.app.action.SYNC"
+          ]
+        }
+      ],
+      "adb_command": "adb shell am startservice -n com.manifestexploitable.app/com.manifestexploitable.app.DataSyncService"
+    },
+    {
+      "type": "service",
+      "name": "com.manifestexploitable.app.RemoteControlService",
+      "permission": "com.manifestexploitable.app.VIEW_TRANSACTIONS",
+      "intent_filters": [],
+      "adb_command": "adb shell am startservice -n com.manifestexploitable.app/com.manifestexploitable.app.RemoteControlService"
+    },
+    {
+      "type": "provider",
+      "name": "com.manifestexploitable.app.AccountsProvider",
+      "permission": null,
+      "grantUriPermissions": "true",
+      "adb_command": "adb shell content query --uri content://com.manifestexploitable.app.accounts/",
+      "sqli_test": "adb shell content query --uri content://com.manifestexploitable.app.accounts/ --where \"1=1\"",
+      "lfi_test": "adb shell content read --uri content://com.manifestexploitable.app.accounts/../../../../../../data/data/com.manifestexploitable.app/databases/",
+      "path_permissions": [
+        {
+          "path": "/transactions",
+          "readPermission": "com.manifestexploitable.app.VIEW_TRANSACTIONS",
+          "writePermission": null
+        },
+        {
+          "path": "/admin",
+          "readPermission": "com.manifestexploitable.app.ACCESS_ACCOUNTS",
+          "writePermission": "com.manifestexploitable.app.ACCESS_ACCOUNTS"
+        }
+      ]
+    },
+    {
+      "type": "provider",
+      "name": "com.manifestexploitable.app.UserDataProvider",
+      "permission": null,
+      "grantUriPermissions": null,
+      "adb_command": "adb shell content query --uri content://com.manifestexploitable.app.userdata/",
+      "sqli_test": "adb shell content query --uri content://com.manifestexploitable.app.userdata/ --where \"1=1\"",
+      "lfi_test": "adb shell content read --uri content://com.manifestexploitable.app.userdata/../../../../../../data/data/com.manifestexploitable.app/databases/"
+    }
+  ]
+}
