@@ -1,18 +1,17 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name="AndroidManifestExplorer",
-    version="1.1.0",
+    version="2.0.0",
     author="Mateo Fumis",
     author_email="mateofumis@mfumis.com",
     description="A professional tool to automate attack surface detection in Android applications by parsing Manifest files.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/mateofumis/AndroidManifestExplorer",
-    packages=find_packages(),
     py_modules=["AndroidManifestExplorer"],
     install_requires=[
-        "colorama>=0.4.4",
+        "rich==13.0.0",
     ],
     entry_points={
         "console_scripts": [
