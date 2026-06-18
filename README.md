@@ -1,5 +1,9 @@
 # **📲 AndroidManifestExplorer**
 
+<img width="1800" height="450" alt="logo_banner" src="https://raw.githubusercontent.com/mateofumis/AndroidManifestExplorer/refs/heads/main/assets/logo_banner.png" />
+
+---
+
 A high-performance static analysis utility designed to automate the discovery of attack surfaces in Android applications. By parsing decompiled `AndroidManifest.xml` files, this tool identifies exposed components, security misconfigurations, deep-link vectors, and dangerous permission usage, providing ready-to-use `adb` payloads for immediate dynamic verification.
 
 ## **🎯 Security Objectives**
