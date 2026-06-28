@@ -4,6 +4,10 @@
 
 ---
 
+![GitHub Release](https://img.shields.io/github/v/release/mateofumis/AndroidManifestExplorer)
+![PyPI - Version](https://img.shields.io/pypi/v/AndroidManifestExplorer)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/AndroidManifestExplorer)
+
 A high-performance static analysis utility designed to automate the discovery of attack surfaces in Android applications. By parsing decompiled `AndroidManifest.xml` files, this tool identifies exposed components, security misconfigurations, deep-link vectors, and dangerous permission usage, providing ready-to-use `adb` payloads for immediate dynamic verification.
 
 ## **🎯 Security Objectives**
