@@ -259,10 +259,11 @@ def analyze_manifest(manifest_path, output_path=None):
         console.print()
 
         components = {
-            'activity': {'cmd': 'am start -n',        'color': 'green',   'label': 'ACTIVITY'},
-            'receiver': {'cmd': 'am broadcast -n',     'color': 'magenta', 'label': 'RECEIVER'},
-            'service':  {'cmd': 'am startservice -n',  'color': 'blue',    'label': 'SERVICE'},
-            'provider': {'cmd': 'content query --uri', 'color': 'red',     'label': 'PROVIDER'},
+            'activity':       {'cmd': 'am start -n',        'color': 'green',   'label': 'ACTIVITY'},
+            'activity-alias': {'cmd': 'am start -n',        'color': 'green',   'label': 'ACTIVITY-ALIAS'},
+            'receiver':       {'cmd': 'am broadcast -n',     'color': 'magenta', 'label': 'RECEIVER'},
+            'service':        {'cmd': 'am startservice -n',  'color': 'blue',    'label': 'SERVICE'},
+            'provider':       {'cmd': 'content query --uri', 'color': 'red',     'label': 'PROVIDER'},
         }
 
         component_count = 0
@@ -354,6 +355,18 @@ def analyze_manifest(manifest_path, output_path=None):
                     else:
                         adb_cmd = f"adb shell {info['cmd']} {package_name}/{full_name}"
                         panel_lines.append("\n")
+
+                        target_activity = None
+                        if comp_type == 'activity-alias':
+                            target_activity = get_attr(node, 'targetActivity')
+                            if target_activity:
+                                if target_activity.startswith('.'):
+                                    target_activity = f"{package_name}{target_activity}"
+                                elif '.' not in target_activity:
+                                    target_activity = f"{package_name}.{target_activity}"
+                                panel_lines.append("  Target      : ", style="dim")
+                                panel_lines.append(target_activity + "\n", style="yellow")
+
                         panel_lines.append("  $ " + adb_cmd + "\n", style="dim cyan")
 
                         # intent-filter actions/categories
@@ -375,8 +388,10 @@ def analyze_manifest(manifest_path, output_path=None):
                             "intent_filters": intent_filters,
                             "adb_command": adb_cmd,
                         }
+                        if target_activity:
+                            entry["targetActivity"] = target_activity
 
-                        if comp_type == 'activity' and has_intent_filter:
+                        if comp_type in ('activity', 'activity-alias') and has_intent_filter:
                             deep_links = analyze_deep_links(node, package_name)
                             if deep_links:
                                 entry["deep_links"] = deep_links
